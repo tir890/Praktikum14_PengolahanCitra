@@ -83,6 +83,6 @@ Dengan menerapkan teknik **ROI Slicing**, algoritma pencarian mata tidak perlu m
 
 ---
 
-### Sumber Yang digunakan
+### Sumber Data Yang Digunakan
 
 - https://github.com/kipr/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml

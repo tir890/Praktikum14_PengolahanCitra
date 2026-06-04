@@ -1,5 +1,3 @@
-# Praktikum14_PengolahanCitra
-
 # Sumber Yang digunakan
 
 - https://github.com/kipr/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml

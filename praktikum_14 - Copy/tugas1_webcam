@@ -1,0 +1,48 @@
+import cv2
+import numpy as np
+
+# 1. Menyiapkan kamera (0 = kamera bawaan laptop)
+video = cv2.VideoCapture(0)
+
+# 2. Memuat model deteksi wajah (Pastikan filenya ada di folder 'data')
+facedetect = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
+
+faces_data = []
+i = 0
+
+while True:
+    ret, frame = video.read()
+    # Mengubah gambar ke hitam putih biar pemrosesan lebih cepat
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+
+    # Mendeteksi wajah
+    faces = facedetect.detectMultiScale(gray, 1.3, 5)
+    
+    for (x, y, w, h) in faces:
+        # Memotong bagian wajah dan mengubah ukurannya menjadi 50x50 piksel
+        crop_img = frame[y:y+h, x:x+w, :]
+        resized_img = cv2.resize(crop_img, (50, 50))
+        
+        # Simpan gambar wajah setiap kelipatan 10 frame hingga maksimal 100 gambar
+        if len(faces_data) <= 100 and i % 10 == 0:
+            faces_data.append(resized_img)
+        
+        i = i + 1
+        
+        # Menampilkan teks jumlah wajah yang tersimpan di layar
+        cv2.putText(frame, str(len(faces_data)), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (50, 50, 255), 1) 
+
+        # Membuat kotak merah di sekitar wajah yang terdeteksi
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
+        
+    # Menampilkan jendela video
+    cv2.imshow("Frame", frame)
+
+    # Tekan tombol 'q' di keyboard untuk keluar dari program
+    k = cv2.waitKey(1)
+    if k == ord('q'):  # <-- Sudah diperbaiki di sini
+        break
+
+# Menutup kamera dan jendela OpenCV
+video.release()
+cv2.destroyAllWindows()

@@ -1,0 +1,32 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt 
+
+# PERUBAHAN: Mengarah ke folder 'data' di laptop kamu
+face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml") 
+
+# Fungsi untuk mendeteksi wajah pada gambar
+def adjusted_detect_face(img): 
+    face_img = img.copy()
+    face_rect = face_cascade.detectMultiScale(face_img, scaleFactor=1.2, minNeighbors=5)
+    
+    for (x, y, w, h) in face_rect:
+        # Menggambar kotak di sekitar wajah
+        cv2.rectangle(face_img, (x, y), (x+w, y+h), (255, 255, 255), 10)
+        
+    return face_img
+
+# PERUBAHAN: Menghapus '/content/' agar membaca gambar langsung di folder proyek VS Code kamu
+# Pastikan kamu sudah menaruh satu foto berformat .jpg bebas dan beri nama 'andrew.jpg'
+img = cv2.imread('andrew.jpg')
+img_copy1 = img.copy()
+
+# Jalankan fungsi deteksi wajah
+face = adjusted_detect_face(img_copy1)
+
+# Menampilkan hasil gambar menggunakan Matplotlib
+plt.imshow(cv2.cvtColor(face, cv2.COLOR_BGR2RGB))
+plt.show() 
+
+# Menyimpan hasil deteksi ke komputer dengan nama 'face.jpg'
+cv2.imwrite('face.jpg', face)

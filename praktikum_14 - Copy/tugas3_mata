@@ -1,0 +1,44 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Memuat Pengklasifikasi Kaskade Haar (Wajah dan Mata)
+face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
+eye_cascade = cv2.CascadeClassifier("data/haarcascade_eye.xml")
+
+# 2. Fungsi untuk Mendeteksi Wajah dan Mata Sekaligus
+def detect_face_and_eyes(img):
+    face_img = img.copy()
+    
+    # Deteksi Wajah
+    face_rects = face_cascade.detectMultiScale(face_img, scaleFactor=1.2, minNeighbors=5)
+    
+    for (x, y, w, h) in face_rects:
+        # Gambar kotak putih untuk Wajah
+        cv2.rectangle(face_img, (x, y), (x+w, y+h), (255, 255, 255), 5)
+        
+        # Cari mata HANYA di dalam area wajah yang terdeteksi (biar lebih akurat)
+        roi_gray = cv2.cvtColor(face_img[y:y+h, x:x+w], cv2.COLOR_BGR2GRAY)
+        roi_color = face_img[y:y+h, x:x+w]
+        
+        eyes = eye_cascade.detectMultiScale(roi_gray, scaleFactor=1.2, minNeighbors=5)
+        for (ex, ey, ew, eh) in eyes:
+            # Gambar kotak putih untuk Mata
+            cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (255, 255, 255), 5)
+            
+    return face_img
+
+# 3. Memuat Gambar Uji Coba
+img = cv2.imread('andrew.jpg')
+
+# 4. Jalankan Fungsi Deteksi
+hasil_deteksi = detect_face_and_eyes(img)
+
+# 5. Menyimpan Hasil Deteksi ke Komputer
+cv2.imwrite('face_and_eyes.jpg', hasil_deteksi)
+print("Proses selesai! Hasil gambar disimpan dengan nama 'face_and_eyes.jpg'")
+
+# 6. Menampilkan Hasil Gambar Menggunakan Matplotlib
+plt.imshow(cv2.cvtColor(hasil_deteksi, cv2.COLOR_BGR2RGB))
+plt.axis('off') # Menghilangkan angka koordinat di pinggir gambar
+plt.show()
